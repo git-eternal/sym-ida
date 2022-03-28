@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     std::exit(0);
   }
 
-	if (!Dissassembler::InitializeZydis())
+	if (!Disassembler::InitializeZydis())
 	{
 		std::cout << "[INFO]: Zydis failed to initialize!\n";
 

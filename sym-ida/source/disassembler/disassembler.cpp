@@ -1,6 +1,6 @@
 #include "disassembler.hpp"
 
-[[nodiscard]] NTSTATUS Dissassembler::InitializeZydis()
+[[nodiscard]] NTSTATUS Disassembler::InitializeZydis()
 {
 #if defined (_WIN64)
   if (!ZYAN_SUCCESS(ZydisDecoderInit(&decoder,
@@ -29,4 +29,24 @@
   }
     
   return STATUS_SUCCESS;
+}
+
+std::string Disassembler::GetObjectCode(void* functionAddress, std::size_t size, bool countBranches)
+{
+  ZydisDecodedInstruction instruction{}; ZyanUSize offset{ 0 };
+
+  // Iterate through the instruction stream, parsing each opcode
+  //
+  while (ZYAN_SUCCESS(ZydisDecoderDecodeBuffer(
+    &decoder, 
+    reinterpret_cast<PBYTE>(functionAddress) + offset, 
+    size - offset,
+    &instruction)))
+  {
+    char buffer[256];
+    ZydisFormatterFormatInstruction(&formatter, &instruction, buffer, sizeof(buffer), NULL);
+
+    CHAR opcode[3];
+    sprintf_s(opcode, "%02x", instruction.opcode);
+  }
 }
