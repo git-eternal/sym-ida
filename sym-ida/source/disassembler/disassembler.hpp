@@ -11,5 +11,5 @@ namespace Disassembler
 	inline ZydisFormatter formatter{};
 
 	[[nodiscard]] NTSTATUS InitializeZydis();
-  std::string GetObjectCode(void* functionAddress, std::size_t size, bool countBranches);
+  std::string GetObjectCode(void* functionAddress, std::size_t size);
 }

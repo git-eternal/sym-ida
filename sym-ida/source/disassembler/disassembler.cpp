@@ -31,9 +31,11 @@
   return STATUS_SUCCESS;
 }
 
-std::string Disassembler::GetObjectCode(void* functionAddress, std::size_t size, bool countBranches)
+std::string Disassembler::GetObjectCode(void* functionAddress, std::size_t size)
 {
   ZydisDecodedInstruction instruction{}; ZyanUSize offset{ 0 };
+
+  std::string opCodes{};
 
   // Iterate through the instruction stream, parsing each opcode
   //
@@ -44,9 +46,17 @@ std::string Disassembler::GetObjectCode(void* functionAddress, std::size_t size,
     &instruction)))
   {
     char buffer[256];
-    ZydisFormatterFormatInstruction(&formatter, &instruction, buffer, sizeof(buffer), NULL);
 
-    CHAR opcode[3];
+    ZydisFormatterFormatInstruction(&formatter,
+      &instruction, buffer, sizeof(buffer), NULL);
+
+    char opcode[3];
     sprintf_s(opcode, "%02x", instruction.opcode);
+
+    opCodes.append(opcode);
+
+    offset += instruction.length;
   }
+
+  return opCodes.empty() ? "Error parsing code" : opCodes;
 }
